@@ -1,19 +1,46 @@
 import { Link, useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useAuth} from "../context/AuthContext"
 import axios from '../api/axios'
 
 function Login() {
+  const { isLogin, login, logout } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errors,setErrors] = useState([])
   const navigate = useNavigate();
-  
+  const csrf = () => axios.get('/sanctum/csrf-cookie')
+
   const handleLogin = async (event) => {
     event.preventDefault();
+    await csrf();
     try{
-      await axios.post('/login', {email, password});
-      setEmail('')
+      await axios.post('/login', {email, password})
+      login()
+      setEmail("")
       setPassword('')
+    }catch(e){
+      if(e.response.status === 422){
+        setErrors(e.response.data.errors);
+      }
+    }
+  }
+  useEffect(() =>{
+    if(isLogin){
       navigate('/')
+    }
+  },[isLogin])
+
+  console.log(isLogin)
+  console.log(email)
+  console.log(password)
+
+  const handleClick = async (event) => {
+    event.preventDefault();
+    await csrf();
+    try{
+      await axios.post('/logout');
+      logout()
     }catch(e){
       console.log(e)
     }
@@ -26,7 +53,7 @@ function Login() {
           <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
             Login
           </h1>
-          {/* <p className="text-red-600">Somthing went wrong</p> */}
+          {isLogin && <p className="text-red-600">{isLogin}</p>}
           <form className="space-y-4 md:space-y-6" onSubmit={handleLogin}>
             <div>
               <label
@@ -35,6 +62,7 @@ function Login() {
               >
                 Your email
               </label>
+              {errors.email && <p className="text-red-500 text-sm text-opacity-75 mb-1">{errors.email[0]}</p>}
               <input
                 onChange={(e) => setEmail(e.currentTarget.value)}
                 type="email"
@@ -52,6 +80,7 @@ function Login() {
               >
                 Password
               </label>
+              {errors.password && <p className="text-red-500 text-sm text-opacity-75 mb-1">{errors.password[0]}</p>}
               <input
                 onChange={(e)=>setPassword(e.currentTarget.value)}
                 type="password"
@@ -78,6 +107,13 @@ function Login() {
               </Link>
             </p>
           </form>
+          <button
+          type="submit"
+              onClick={handleClick}
+              className="border-[1px] border-white w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+            >
+              Logout
+            </button>
         </div>
       </div>
     </div>
