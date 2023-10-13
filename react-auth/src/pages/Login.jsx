@@ -1,50 +1,20 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { useAuth} from "../context/AuthContext"
+import useAuthContext from "../context/AuthContext"
 import axios from '../api/axios'
 
 function Login() {
-  const { isLogin, login, logout } = useAuth();
+  const {  login, errors } = useAuthContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors,setErrors] = useState([])
-  const navigate = useNavigate();
   const csrf = () => axios.get('/sanctum/csrf-cookie')
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    await csrf();
-    try{
-      await axios.post('/login', {email, password})
-      login()
-      setEmail("")
-      setPassword('')
-    }catch(e){
-      if(e.response.status === 422){
-        setErrors(e.response.data.errors);
-      }
-    }
+    login({email, password});
   }
-  useEffect(() =>{
-    if(isLogin){
-      navigate('/')
-    }
-  },[isLogin])
 
-  console.log(isLogin)
-  console.log(email)
-  console.log(password)
-
-  const handleClick = async (event) => {
-    event.preventDefault();
-    await csrf();
-    try{
-      await axios.post('/logout');
-      logout()
-    }catch(e){
-      console.log(e)
-    }
-  }
+  
 
   return (
     <div className="flex flex-col items-center justify-center w-auto h-auto px-6 py-8 mx-auto md:h-screen lg:py-0">
@@ -53,7 +23,7 @@ function Login() {
           <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
             Login
           </h1>
-          {isLogin && <p className="text-red-600">{isLogin}</p>}
+          {/* {isLogin && <p className="text-red-600">{isLogin}</p>} */}
           <form className="space-y-4 md:space-y-6" onSubmit={handleLogin}>
             <div>
               <label
@@ -107,13 +77,6 @@ function Login() {
               </Link>
             </p>
           </form>
-          <button
-          type="submit"
-              onClick={handleClick}
-              className="border-[1px] border-white w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-            >
-              Logout
-            </button>
         </div>
       </div>
     </div>
