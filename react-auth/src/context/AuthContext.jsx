@@ -3,7 +3,6 @@ import axios from "../api/axios";
 import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext({});
-// const LOGIN_STORAGE_KEY = "login";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState();
@@ -16,20 +15,6 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("isLogin", JSON.stringify(isLogin));
   }, [isLogin]);
 
-  // const [isLogin, setIsLogin] = useState(false);
-
-  // const localLogin =
-  //   (typeof window !== "undefined" &&
-  //     JSON.parse(localStorage.getItem(LOGIN_STORAGE_KEY))) ||
-  //   [];
-  // const [islocalLogin, setIsLocalLogin] = useState(localLogin);
-
-  // useEffect(() => {
-  //   localStorage.setItem(LOGIN_STORAGE_KEY, JSON.stringify(islocalLogin));
-  // }, [islocalLogin]);
-  // useEffect(() => {
-  //   setIsLogin(islocalLogin);
-  // }, []);
 
   const navigate = useNavigate();
 
@@ -37,7 +22,6 @@ export const AuthProvider = ({ children }) => {
 
   const getUser = async () => {
     const { data } = await axios.get("/api/user");
-    console.log(data);
     setUser(data);
   };
 
@@ -47,8 +31,6 @@ export const AuthProvider = ({ children }) => {
       await axios.post("/login", data);
       await getUser();
       setIsLogin(true);
-      // setIsLocalLogin(true);
-      // setIsLogin(true);
       navigate("/");
     } catch (e) {
       if (e.response.status === 422) {
@@ -62,7 +44,6 @@ export const AuthProvider = ({ children }) => {
       await axios.post("/register", data);
       await getUser();
       setIsLogin(true);
-      // setIsLogin(true)
       navigate("/");
     } catch (e) {
       if (e.response.status === 422) {
@@ -75,8 +56,6 @@ export const AuthProvider = ({ children }) => {
     axios.post("/logout").then(() => {
       setUser(null);
       setIsLogin(true);
-      // setIsLocalLogin(false);
-      // setIsLogin(false);
     });
   };
 
