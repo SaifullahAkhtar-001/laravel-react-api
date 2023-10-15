@@ -2,10 +2,10 @@ import { useEffect } from "react";
 import useAuthContext from "../context/AuthContext";
 
 function Home() {
-  const { user, getUser } = useAuthContext();
+  const { user, getUser,isLogin } = useAuthContext();
 
     useEffect(() => {
-      if (!user) {
+      if (isLogin && !user) {
         getUser();
       }
     }, []);

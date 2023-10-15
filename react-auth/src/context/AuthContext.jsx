@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import axios from "../api/axios";
 import { useNavigate } from "react-router-dom";
 
@@ -8,6 +8,14 @@ const AuthContext = createContext({});
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState();
   const [errors, setErrors] = useState([]);
+  const [isLogin, setIsLogin] = useState(
+    JSON.parse(localStorage.getItem("isLogin")) || false
+  );
+
+  useEffect(() => {
+    localStorage.setItem("isLogin", JSON.stringify(isLogin));
+  }, [isLogin]);
+
   // const [isLogin, setIsLogin] = useState(false);
 
   // const localLogin =
@@ -38,6 +46,7 @@ export const AuthProvider = ({ children }) => {
     try {
       await axios.post("/login", data);
       await getUser();
+      setIsLogin(true);
       // setIsLocalLogin(true);
       // setIsLogin(true);
       navigate("/");
@@ -52,6 +61,7 @@ export const AuthProvider = ({ children }) => {
     try {
       await axios.post("/register", data);
       await getUser();
+      setIsLogin(true);
       // setIsLogin(true)
       navigate("/");
     } catch (e) {
@@ -64,6 +74,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     axios.post("/logout").then(() => {
       setUser(null);
+      setIsLogin(true);
       // setIsLocalLogin(false);
       // setIsLogin(false);
     });
@@ -71,7 +82,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, errors, getUser, login, register, logout }}
+      value={{ user, errors, getUser, login, register, logout, isLogin }}
     >
       {children}
     </AuthContext.Provider>
