@@ -3,7 +3,7 @@ import React from "react";
 import useAuthContext from "../context/AuthContext";
 
 function Navbar() {
-  const { user,logout } = useAuthContext();
+  const { isLogin,logout } = useAuthContext();
 
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900">
@@ -53,7 +53,7 @@ function Navbar() {
                 Home
               </Link>
             </li>
-            {!user ? (
+            { !isLogin ? (
               <>
               <li>
                 <Link

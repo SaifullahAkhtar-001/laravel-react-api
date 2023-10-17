@@ -1,19 +1,24 @@
 import { Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
 import { Home, Login, Register } from "./pages";
+import { Navbar, AuthLayout, GuestLayout } from "./components";
 
-function App() {
 
-  return (
-    <div className="">
+  function App() {
+
+    return (
+      <div className="">
         <Navbar />
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route element={<AuthLayout />}>
+            <Route path="/" element={<Home />} />
+          </Route>
+          <Route element={<GuestLayout />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Route>
         </Routes>
-    </div>
-  );
-}
+      </div>
+    );
+  }
 
 export default App;

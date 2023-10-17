@@ -7,6 +7,7 @@ const AuthContext = createContext({});
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState();
   const [errors, setErrors] = useState([]);
+  const [loading,setLoading] = useState(false)
   const [isLogin, setIsLogin] = useState(
     JSON.parse(localStorage.getItem("isLogin")) || false
   );
@@ -26,12 +27,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async ({ ...data }) => {
+    setLoading(true)
     await csrf();
     try {
       await axios.post("/login", data);
       await getUser();
       setIsLogin(true);
       navigate("/");
+      setLoading(false);
     } catch (e) {
       if (e.response.status === 422) {
         setErrors(e.response.data.errors);
@@ -55,13 +58,20 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     axios.post("/logout").then(() => {
       setUser(null);
-      setIsLogin(true);
+      setIsLogin(false);
     });
   };
 
+  useEffect(() => {
+    if (isLogin && !user) {
+      getUser();
+    }
+  }, []);
+
+
   return (
     <AuthContext.Provider
-      value={{ user, errors, getUser, login, register, logout, isLogin }}
+      value={{ user, errors, getUser, login, register, logout, isLogin, loading }}
     >
       {children}
     </AuthContext.Provider>

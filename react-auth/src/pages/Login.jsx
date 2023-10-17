@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import useAuthContext from "../context/AuthContext"
 
 function Login() {
-  const {  login, errors } = useAuthContext();
+  const {  login, errors, loading } = useAuthContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const csrf = () => axios.get('/sanctum/csrf-cookie')
@@ -60,9 +60,9 @@ function Login() {
                 required=""
               />
             </div>
-            <button
+            <button disabled={loading}
               type="submit"
-              className="border-[1px] border-white w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+              className="disabled:opacity-70 border-[1px] border-white w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
             >
               Login
             </button>
