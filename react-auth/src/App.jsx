@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
-import { Home, Login, Register } from "./pages";
-import { Navbar, AuthLayout, GuestLayout } from "./components";
+import { Home, Login, Register, Contact } from "./pages";
+import { Navbar, AuthLayout, GuestLayout } from "./components/Index";
 
 
   function App() {
@@ -16,6 +16,7 @@ import { Navbar, AuthLayout, GuestLayout } from "./components";
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Route>
+          <Route path="/get_contact/:userId" element={<Contact />} />
         </Routes>
       </div>
     );

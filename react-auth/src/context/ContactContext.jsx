@@ -1,25 +1,48 @@
-import { useContext, createContext } from "react";
+import { useContext, createContext, useState, useEffect } from "react";
 import axios from "../api/axios";
 
-const ContactContext = createContext({})
+const ContactContext = createContext({});
 
-export const ContactProvider = ({children}) =>{
-    const  getContacts= async() => {
-        console.log("Started")
-        await axios.get("/api/contacts").then(response => {
-            console.log(response);
-        }).catch(error => {
-            console.log(error);
-        });
+export const ContactProvider = ({ children }) => {
+  const [contacts, setContacts] = useState([]);
+  const [contact, setContact] = useState({});
+
+  //      get all contacts
+  const getContacts = async () => {
+    console.log("Started");
+    try {
+      await axios.get("/api/contacts").then((response) => {
+        setContacts(response.data.contact);
+      });
+    } catch (error) {
+      console.log(error);
     }
+  };
+  useEffect(() => {
+    getContacts();
+  }, []);
 
-    return(
-        <ContactContext.Provider value={{ getContacts}}>
-            {children}
-        </ContactContext.Provider>
-    );
-}
+  //   get the one selected contact with given id
+  const getContact = async (id) => {
+    console.log("start getting one contact");
+    try {
+      await axios.get(`/api/get_contact/${id}`).then((response) => {
+        setContact(response.data);
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
-export default function useContactContext(){
-    return useContext(ContactContext);
+  return (
+    <ContactContext.Provider
+      value={{ getContacts, getContact, contacts, contact }}
+    >
+      {children}
+    </ContactContext.Provider>
+  );
+};
+
+export default function useContactContext() {
+  return useContext(ContactContext);
 }

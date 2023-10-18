@@ -1,25 +1,24 @@
 import { useEffect } from "react";
+import { ContactsTable } from "../components/Index";
 import useAuthContext from "../context/AuthContext";
-import useContactContext from "../context/ContactContext";
 
 function Home() {
   const { user, getUser, isLogin } = useAuthContext();
-  const { getContacts } = useContactContext();
 
   useEffect(() => {
     if (isLogin && !user) {
       getUser();
     }
   }, []);
-  const handleUser = () =>{
+  const handleUser = () => {
     getContacts();
-  }
+  };
 
   return (
-    <>
-      <div className="max-w-6xl mx-auto">{user?.name}</div>
-      <button onClick={handleUser}>getContacts</button>
-    </>
+    <div className="max-w-6xl mx-auto">
+      <div className="text-4xl font-semibold py-16">Hi, {user?.name}</div>
+      <ContactsTable/>      
+    </div>
   );
 }
 
