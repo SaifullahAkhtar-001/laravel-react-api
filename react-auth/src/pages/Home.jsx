@@ -3,13 +3,13 @@ import { ContactsTable } from "../components/Index";
 import useAuthContext from "../context/AuthContext";
 
 function Home() {
-  const { user, getUser, isLogin } = useAuthContext();
+  const { user, getUser, loading } = useAuthContext();
 
   useEffect(() => {
-    if (isLogin && !user) {
+    if (loading && !user) {
       getUser();
     }
-  }, []);
+  }, [loading]);
   const handleUser = () => {
     getContacts();
   };

@@ -8,13 +8,6 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState();
   const [errors, setErrors] = useState([]);
   const [loading,setLoading] = useState(false)
-  const [isLogin, setIsLogin] = useState(
-    JSON.parse(localStorage.getItem("isLogin")) || false
-  );
-
-  useEffect(() => {
-    localStorage.setItem("isLogin", JSON.stringify(isLogin));
-  }, [isLogin]);
 
 
   const navigate = useNavigate();
@@ -22,8 +15,11 @@ export const AuthProvider = ({ children }) => {
   const csrf = () => axios.get("/sanctum/csrf-cookie");
 
   const getUser = async () => {
+    setLoading(true)
     const { data } = await axios.get("/api/user");
     setUser(data);
+    setLoading(false)
+
   };
 
   const login = async ({ ...data }) => {
@@ -32,7 +28,6 @@ export const AuthProvider = ({ children }) => {
     try {
       await axios.post("/login", data);
       await getUser();
-      setIsLogin(true);
       navigate("/");
       setLoading(false);
     } catch (e) {
@@ -46,7 +41,6 @@ export const AuthProvider = ({ children }) => {
     try {
       await axios.post("/register", data);
       await getUser();
-      setIsLogin(true);
       navigate("/");
     } catch (e) {
       if (e.response.status === 422) {
@@ -58,12 +52,11 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     axios.post("/logout").then(() => {
       setUser(null);
-      setIsLogin(false);
     });
   };
 
   useEffect(() => {
-    if (isLogin && !user) {
+    if (!user) {
       getUser();
     }
   }, []);
@@ -71,7 +64,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, errors, getUser, login, register, logout, isLogin, loading }}
+      value={{ user, errors, getUser, login, register, logout, loading }}
     >
       {children}
     </AuthContext.Provider>

@@ -8,7 +8,7 @@ export const ContactProvider = ({ children }) => {
   const [contacts, setContacts] = useState([]);
   const [contact, setContact] = useState({});
   const [errors, setErrors] = useState();
-  const [contactData, setContactData] = useState();
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   //      get all contacts
@@ -27,6 +27,8 @@ export const ContactProvider = ({ children }) => {
 
   //   get the one selected contact with given id
   const getContact = async (id) => {
+    setLoading(true)
+    setContact({});
     try {
       await axios.get(`/api/get_contact/${id}`).then((response) => {
         setContact(response.data);
@@ -34,6 +36,7 @@ export const ContactProvider = ({ children }) => {
     } catch (e) {
       console.log(e);
     }
+    setLoading(false)
   };
 
   // to delete the selected post
@@ -138,7 +141,7 @@ export const ContactProvider = ({ children }) => {
   
   return (
     <ContactContext.Provider
-      value={{ getContacts, getContact, deleteContact, createContact, editContact, contacts, contact, errors, contactData }}
+      value={{ getContacts, getContact, deleteContact, createContact, editContact, contacts, contact, errors, loading }}
     >
       {children}
     </ContactContext.Provider>
