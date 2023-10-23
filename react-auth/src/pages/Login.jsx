@@ -6,7 +6,6 @@ function Login() {
   const {  login, errors, loading } = useAuthContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const csrf = () => axios.get('/sanctum/csrf-cookie')
 
   const handleLogin = async (event) => {
     event.preventDefault();

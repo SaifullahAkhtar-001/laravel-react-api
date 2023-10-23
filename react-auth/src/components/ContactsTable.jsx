@@ -2,7 +2,9 @@ import { Link } from "react-router-dom";
 import useContactContext from "../context/ContactContext";
 
 function ContactsTable() {
-  const { contacts } = useContactContext();
+  
+  const { contacts,deleteContact } = useContactContext();
+
 
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -43,17 +45,17 @@ function ContactsTable() {
                   {contact.id}
                 </th>
                 <td className="px-6 py-4">
-                  <Link to={`/get_contact/${contact.id}`}>{contact.name}</Link>
+                  <Link to={`/contact/${contact.id}`}>{contact.name}</Link>
                 </td>
                 <td className="px-6 py-4">{contact.email}</td>
                 <td className="px-6 py-4">{contact.designation}</td>
                 <td className="px-6 py-4">{contact.contact_no}</td>
                 <td className="flex gap-4 px-6 py-4">
-                  <a className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                  <Link to={`/update_contact/${contact.id}`} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
                     Edit
-                  </a>
+                  </Link>
                   <a
-                    href="#"
+                    onClick={()=>deleteContact(contact.id)}
                     className="font-medium text-red-600 dark:text-red-500 hover:underline"
                   >
                     Delete

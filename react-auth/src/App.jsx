@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { Home, Login, Register, Contact } from "./pages";
+import { Home, Login, Register, Contact, AddContact, EditContact } from "./pages";
 import { Navbar, AuthLayout, GuestLayout } from "./components/Index";
 
 
@@ -16,7 +16,9 @@ import { Navbar, AuthLayout, GuestLayout } from "./components/Index";
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Route>
-          <Route path="/get_contact/:userId" element={<Contact />} />
+          <Route path="/contact/:userId" element={<Contact />} />
+          <Route path="/create" element={<AddContact />} />
+          <Route path="/update_contact/:contactId" element={<EditContact />} />
         </Routes>
       </div>
     );
