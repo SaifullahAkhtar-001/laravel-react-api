@@ -10,9 +10,6 @@ function Home() {
       getUser();
     }
   }, [loading]);
-  const handleUser = () => {
-    getContacts();
-  };
 
   return (
     <div className="max-w-6xl mx-auto">
