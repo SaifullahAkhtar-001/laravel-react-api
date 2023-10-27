@@ -56,7 +56,7 @@ function ContactsTable() {
                   </Link>
                   <a
                     onClick={()=>deleteContact(contact.id)}
-                    className="font-medium text-red-600 dark:text-red-500 hover:underline"
+                    className="font-medium text-red-600 dark:text-red-500 hover:underline cursor-pointer"
                   >
                     Delete
                   </a>

@@ -7,23 +7,27 @@ const AuthContext = createContext({});
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState();
   const [errors, setErrors] = useState([]);
-  const [loading,setLoading] = useState(false)
-
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const csrf = () => axios.get("/sanctum/csrf-cookie");
 
   const getUser = async () => {
-    setLoading(true)
-    const { data } = await axios.get("/api/user");
-    setUser(data);
-    setLoading(false)
-
+    try {
+      setLoading(true);
+      const { data } = await axios.get("/api/user");
+      setUser(data);
+      setLoading(false);
+    } catch (error) {
+      // Handle the error here
+      console.error("An error occurred while fetching user data:");
+      setLoading(false); // Set loading to false in case of an error
+    }
   };
 
   const login = async ({ ...data }) => {
-    setLoading(true)
+    setLoading(true);
     await csrf();
     try {
       await axios.post("/login", data);
@@ -36,6 +40,42 @@ export const AuthProvider = ({ children }) => {
       }
     }
   };
+
+
+// Function to check if the user is logged in
+const checkLoginStatus = async () => {
+  const token = localStorage.getItem('authToken'); // Retrieve the token from local storage
+
+  if (!token) {
+    // If there's no token, the user is not logged in
+    return false;
+  }
+
+  try {
+    const response = await axios.get('/api/user', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    // If the request succeeds, the user is logged in
+    return true;
+  } catch (error) {
+    // If the request fails, the token is likely invalid, and the user is not logged in
+    return false;
+  }
+};
+
+// Example usage
+checkLoginStatus().then((isLoggedIn) => {
+  if (isLoggedIn) {
+    console.log('User is logged in');
+  } else {
+    console.log('User is not logged in');
+  }
+});
+
+
   const register = async ({ ...data }) => {
     await csrf();
     try {
@@ -60,7 +100,6 @@ export const AuthProvider = ({ children }) => {
       getUser();
     }
   }, []);
-
 
   return (
     <AuthContext.Provider
